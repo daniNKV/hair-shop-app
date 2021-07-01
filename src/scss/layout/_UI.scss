@@ -25,9 +25,22 @@
 .app {
     h1 {
         text-align: center;
+        color: $azul;
+        text-transform: uppercase;
+        font-weight: $bold;
     }
     
     width: 95%;
     margin: 0 auto;
     padding-top: $separacion/2;
+
+    .seccion {
+        display: none;
+        text-align: center;
+        margin-top: $separacion/2;
+        color: $azul;
+        &:first-of-type {
+            display:block;
+        }
+    }
 }

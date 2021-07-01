@@ -1,27 +1,22 @@
-$fuentePrincipal : 'Montserrat', sans-serif;
+// Fuentes
+$fuentePrincipal: 'Poppins', sans-serif;
 
-//  Colores
-$verde: #4cB8B3;
-$rosa: #f53756;
-$amarillo: #fef46d;
-$morado: #752f97;
-$negro: rgb(22, 22, 22);
-$blanco: #FFF;
-
-//  Media Queries
-
+// Tamaño de Media Queries
 $telefono: 480px;
 $tablet: 768px;
-$desktop: 1200px;
+$desktop: 1024px;
 
-//  Fuentes
-
-$delgada: 300;
-$regular: 400;
-$bold: 700;
-$black: 900;
-
-
-//  Separaciones
+// Colores
+$azul: #0da6f3;
+$negro: #1a1b15;
+$blanco: #FFFFFF;
+$gris: #e1e1e1;
 
 $separacion: 5rem;
+
+// Fuentes
+
+$delgada: 300;
+$regular : 400;
+$bold: 700;
+$black: 900
