@@ -1,5 +1,5 @@
 const { src, dest, watch , parallel } = require('gulp');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const autoprefixer = require('autoprefixer');
 const postcss    = require('gulp-postcss')
 const sourcemaps = require('gulp-sourcemaps')
@@ -44,14 +44,14 @@ function imagenes() {
     return src(paths.imagenes)
         .pipe(cache(imagemin({ optimizationLevel: 3})))
         .pipe(dest('build/img'))
-        .pipe(notify({ message: 'Imagen Completada'}));
+        //.pipe(notify({ message: 'Imagen Completada'}));
 }
 
 function versionWebp() {
     return src(paths.imagenes)
         .pipe( webp() )
         .pipe(dest('build/img'))
-        .pipe(notify({ message: 'Imagen Completada'}));
+        //.pipe(notify({ message: 'Imagen Completada'}));
 }
 
 
