@@ -11,6 +11,10 @@
         border: none;
         border-radius: .3rem;
 
+        &.actual {
+            background-color: $azul;
+            color: $blanco;
+        }
         &:hover {
             cursor: pointer;
         }
