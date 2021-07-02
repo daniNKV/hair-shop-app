@@ -4,9 +4,9 @@
 }
 
 .container-estetica {
-   
+    height: 100vh;
+
     @include tabletMedia {
-        height: 100vh;
         @include grid ( 2 , $separacion );
     }
 
@@ -23,10 +23,9 @@
 }
 
 .app {
-    h1 {
+    h1,h2 {
         text-align: center;
         color: $azul;
-        text-transform: uppercase;
         font-weight: $bold;
     }
     
@@ -36,11 +35,13 @@
 
     .seccion {
         display: none;
-        text-align: center;
         margin-top: $separacion/2;
-        color: $azul;
+        
         &:first-of-type {
             display:block;
+        }
+        p {
+            color: $blanco;
         }
     }
 }
