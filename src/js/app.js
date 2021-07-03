@@ -161,15 +161,36 @@ function seleccionarServicio(event) {
     }else {
         elemento = event.target.parentElement;
     }
-    console.log(elemento.dataset.idServicio)
+   // console.log(elemento.dataset.idServicio)
 
     if (elemento.classList.contains('seleccionado')) {
         elemento.classList.remove('seleccionado')
-    } else {    
-        elemento.classList.add('seleccionado')
-}
-}
 
+        const id = parseInt (elemento.dataset.idServicio);
+
+        eliminarServicio(id);
+    } else {    
+        elemento.classList.add('seleccionado');
+        const servicioObj = {
+            id: parseInt(elemento.dataset.idServicio),
+            nombre: elemento.firstElementChild.textContent,
+            precio: elemento.firstElementChild.nextSibling.textContent
+        }
+        agregarServicio(servicioObj);
+    }
+}
+function eliminarServicio (id) {
+    const { servicios } = cita;
+    cita.servicios = servicios.filter( servicio => servicio.id !== id);
+    console.log(cita);
+}
+function agregarServicio (servicioObj) {
+    const { servicios } = cita;
+    cita.servicios = [...servicios, servicioObj];
+    console.log(cita);
+
+}
+console.log(cita);
 function mostrarResumen () {
 
     //Destructuring 
@@ -182,7 +203,6 @@ function mostrarResumen () {
         const noServicios = document.createElement('P');
         noServicios.textContent = 'Faltan datos de Servicios, hora, fecha o nombre'
         noServicios.classList.add('invalidar-cita')
-
         //Agregar a resumen Div
         resumenDiv.appendChild(noServicios);
     }
