@@ -37,11 +37,14 @@
                 font-weight: $bold;
                 color:$azul;
             }
-            &:first-child {
-                border-top: 1px solid lighten(#43453c, 10);
-                margin-top: $separacion/2;
+            &:last-child {
+                border-bottom: none;
             }
         }
 
     }
+}
+
+.total {
+    text-align: right;
 }
