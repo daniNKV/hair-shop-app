@@ -29,6 +29,10 @@ function iniciarApp() {
     botonesPaginador();
 // Muestra el resumen de la cita o el error 
     mostrarResumen();
+// Almacena el nombre de la cita en el objeto
+    nombreCita();
+// Almacena la fecha de la cita en el objeto
+    fechaCita();
 }
 
 
@@ -190,7 +194,7 @@ function agregarServicio (servicioObj) {
     console.log(cita);
 
 }
-console.log(cita);
+
 function mostrarResumen () {
 
     //Destructuring 
@@ -206,4 +210,66 @@ function mostrarResumen () {
         //Agregar a resumen Div
         resumenDiv.appendChild(noServicios);
     }
+}
+function nombreCita() {
+    const $nombreInput = document.getElementById('nombre') 
+    $nombreInput.addEventListener('input', event => {
+        const $nombreTexto = event.target.value.trim();
+        
+        // Validacion nombre Texto
+        if ($nombreTexto === '' || $nombreTexto.length < 3){
+            mostrarAlerta('Nombre no valido', 'error')
+        }else {
+            const alerta = document.querySelector('.alerta');
+            if (alerta) {
+                alerta.remove();
+            }
+
+            cita.nombre = $nombreTexto;
+
+            console.log(cita);
+        }
+    })
+}
+function fechaCita() {
+    const fechaInput = document.getElementById('fecha')
+    fechaInput.addEventListener('input', event => {
+        const opciones = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long'
+        }
+        const dia = new Date(event.target.value).getUTCDay();
+
+        if ([0, 6].includes(dia)) {
+            event.preventDefault();
+            fechaInput.value = '';
+            mostrarAlerta('No trabajamos los fines de semana :(', 'error');
+        }else {
+            cita.fecha = fechaInput.value;
+        }
+    })
+} //toLocalDateString('es-ES', opciones)
+function mostrarAlerta(mensaje, tipo) {
+    // Si hay alertas, no crear otra
+    const alertaPrevia = document.querySelector('.alerta');
+    if(alertaPrevia) {
+        return;
+    }
+    //Crea elemento Alerta
+    const alerta = document.createElement('DIV');
+    alerta.textContent = mensaje;
+    alerta.classList.add('alerta');
+    if(tipo === 'error') {
+        alerta.classList.add('error');
+    }
+
+    // Inyectar en el HTML
+    const $form = document.querySelector('.form');
+    $form.appendChild(alerta)
+
+    // Eliminar la alerta después de 3 seg
+    setTimeout(() => {
+        alerta.remove()
+    },3000)
 }
