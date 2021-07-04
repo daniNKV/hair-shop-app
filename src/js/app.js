@@ -33,6 +33,12 @@ function iniciarApp() {
     nombreCita();
 // Almacena la fecha de la cita en el objeto
     fechaCita();
+// Almacena la hora de la cita en el objeto
+    horaCita();
+// Desabilita dias pasados
+    deshabilitarFechaAnterior();
+// Deshabilita horas no laborales
+    deshabilitarHorasNoValidas();
 }
 
 
@@ -105,6 +111,8 @@ function botonesPaginador () {
     }else if (pagina === 3) {
         $paginaSiguiente.classList.add('ocultar');
         $paginaAnterior.classList.remove('ocultar');
+
+        mostrarResumen(); // Estamos en la pagina 3, carga el resumen de la cita
     }else {
         $paginaAnterior.classList.remove('ocultar');
         $paginaSiguiente.classList.remove('ocultar');
@@ -162,8 +170,8 @@ function seleccionarServicio(event) {
     let elemento;
     if (event.target.tagName === 'P'){
         elemento = event.target.parentElement;
-    }else {
-        elemento = event.target.parentElement;
+    }else if (event.target.tagName === 'DIV') {
+        elemento = event.target;
     }
    // console.log(elemento.dataset.idServicio)
 
@@ -201,7 +209,10 @@ function mostrarResumen () {
     const { nombre, fecha, hora, servicios } = cita;
     //Seleccionar el resumen
     const resumenDiv = document.querySelector('.contenido-resumen');
-
+    // Limpiar HTML previo
+    while (resumenDiv.firstChild) {
+        resumenDiv.removeChild(resumenDiv.firstChild);
+    }
     // validacion de objeto
     if (Object.values(cita).includes('')) {
         const noServicios = document.createElement('P');
@@ -209,15 +220,61 @@ function mostrarResumen () {
         noServicios.classList.add('invalidar-cita')
         //Agregar a resumen Div
         resumenDiv.appendChild(noServicios);
+
+        return;
     }
+    // Mostrar el resumen
+    const headingCita = document.createElement('H3');
+    headingCita.textContent = 'Resumen de Cita';
+
+    const nombreCita = document.createElement('P');
+    nombreCita.innerHTML = `<span>Nombre:</span> ${nombre}`;
+    const fechaCita = document.createElement('P');
+    fechaCita.innerHTML = `<span>Fecha:</span> ${fecha}`;
+    const horaCita = document.createElement('P');
+    horaCita.innerHTML = `<span>Hora:</span> ${hora}`;
+    
+    const serviciosCita = document.createElement('DIV');
+    serviciosCita.classList.add('resumen-servicios');
+
+    const headingServicios = document.createElement('H3');
+    headingServicios.textContent = 'Resumen de Servicios'
+    
+    serviciosCita.appendChild(headingServicios);
+    // Iterar sobre el array de Servicios
+    servicios.forEach( servicio => {
+        const { nombre, precio } = servicio;
+        
+        const containerServicio = document.createElement('DIV');
+        containerServicio.classList.add('container-servicio');
+
+        const textoServicio = document.createElement('P');
+        textoServicio.textContent = nombre;
+        
+        const precioServicio = document.createElement('P');
+        precioServicio.textContent = precio;
+        precioServicio.classList.add('precio')
+        // Inyectar Precio y Texto en el div
+        
+        containerServicio.appendChild(textoServicio);
+        containerServicio.appendChild(precioServicio);
+
+        serviciosCita.appendChild(containerServicio);
+    })
+    resumenDiv.appendChild(headingCita)
+    resumenDiv.appendChild(nombreCita);
+    resumenDiv.appendChild(fechaCita);
+    resumenDiv.appendChild(horaCita);
+
+    resumenDiv.appendChild(serviciosCita);
 }
 function nombreCita() {
-    const $nombreInput = document.getElementById('nombre') 
-    $nombreInput.addEventListener('input', event => {
-        const $nombreTexto = event.target.value.trim();
+    const nombreInput = document.getElementById('nombre') 
+    nombreInput.addEventListener('input', event => {
+        const nombreTexto = event.target.value.trim();
         
         // Validacion nombre Texto
-        if ($nombreTexto === '' || $nombreTexto.length < 3){
+        if (nombreTexto === '' || nombreTexto.length < 3){
             mostrarAlerta('Nombre no valido', 'error')
         }else {
             const alerta = document.querySelector('.alerta');
@@ -225,7 +282,7 @@ function nombreCita() {
                 alerta.remove();
             }
 
-            cita.nombre = $nombreTexto;
+            cita.nombre = nombreTexto;
 
             console.log(cita);
         }
@@ -248,8 +305,30 @@ function fechaCita() {
         }else {
             cita.fecha = fechaInput.value;
         }
+    console.log(cita);
     })
 } //toLocalDateString('es-ES', opciones)
+function horaCita() {
+    const horaInput = document.getElementById('hora');
+    horaInput.addEventListener('input', event => {
+        const horaElegida = event.target.value;
+        const hora = horaElegida.split(':');
+        if (hora[0] < 8 || hora[0] > 20) {
+            mostrarAlerta('Horarios habiles de 08:00 a 20:00', 'error')
+            cita.hora = '';
+            setTimeout( () => {
+                horaInput.value = '';
+            },2000)
+        }else {
+            cita.hora = horaElegida;
+            const alerta = document.querySelector('.alerta');
+            if (alerta) {
+                alerta.remove();
+            }
+        }   
+        console.log(cita);
+    })
+}
 function mostrarAlerta(mensaje, tipo) {
     // Si hay alertas, no crear otra
     const alertaPrevia = document.querySelector('.alerta');
@@ -272,4 +351,25 @@ function mostrarAlerta(mensaje, tipo) {
     setTimeout(() => {
         alerta.remove()
     },3000)
+}
+
+function deshabilitarFechaAnterior() {
+    const inputFecha = document.querySelector('#fecha');
+    
+    const fechaAhora = new Date();
+    const year = fechaAhora.getFullYear();
+    const mes = (fechaAhora.getMonth() + 1).toString().padStart( 2, "0") ;
+    const dia = (fechaAhora.getDate() + 1).toString().padStart( 2, "0");
+
+    const fechaDeshabilitar = `${year}-${mes}-${dia}`;
+    inputFecha.min = fechaDeshabilitar;
+}
+function deshabilitarHorasNoValidas () {
+    const inputHora = document.querySelector('#hora');
+    const horaApertura = '08:00';
+    const horaCierre = '20:00';
+    const duracionTurno = '1800'
+    inputHora.min = horaApertura;
+    inputHora.max = horaCierre;
+
 }
