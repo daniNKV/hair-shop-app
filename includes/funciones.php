@@ -1,6 +1,6 @@
 <?php
 
-function obtenerServicios() {
+function obtenerServicios() : array {
     try {
         // Importar conexión
         require 'database.php';
@@ -16,7 +16,7 @@ function obtenerServicios() {
         $indice = 0;
 
         //Obtener Resultados
-        while( $row = mysqli_fetch_assoc($consulta) ) {
+        while( $row = mysqli_fetch_assoc($consulta)) {
             $servicios[$indice]['id'] = $row['id'];
             $servicios[$indice]['nombre'] = $row['nombre'];
             $servicios[$indice]['precio'] = $row['precio'];
@@ -36,4 +36,3 @@ function obtenerServicios() {
     }
 }
 
-obtenerServicios();
